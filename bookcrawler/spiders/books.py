@@ -85,14 +85,34 @@ class BooksSpider(scrapy.Spider):
         match = re.search(r"(\d+)", availability_text)
         if match:
             stock_num = int(match.group(1))
-        # product descripttion
-        description = response.css(".product_page > p::text").get()
+        
+        # rating (ada di class star-rating)
+        rating_class = response.css("p.star-rating::attr(class)").get()
+        # contoh: "star-rating Three" -> ambil "Three"
+        rating_text = rating_class.split()[-1] if rating_class else None
+        
+        # konversi rating text ke angka
+        rating_map = {
+            "One": 1,
+            "Two": 2,
+            "Three": 3,
+            "Four": 4,
+            "Five": 5
+        }
+        rating_num = rating_map.get(rating_text, 0)
+        
+        # product description
+        description = response.css("#product_description ~ p::text").get()
+        if not description:
+            description = response.css(".product_page > p::text").get()
+        
         yield {
             "title": title,
             "price": price,
             "category": category,
             "upc": upc,
             "stock": stock_num,
+            "rating": rating_num,
             "description": description,
             "detail_page": response.url
         }
