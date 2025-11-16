@@ -379,5 +379,59 @@ class BookAnalyzer:
             input("\nTekan Enter untuk melanjutkan...")
 
 if __name__ == "__main__":
+    # ========== JALANKAN MENU INTERAKTIF ==========
     analyzer = BookAnalyzer("classics.json")
     analyzer.run()
+    
+    # ========== ATAU JALANKAN LANGSUNG TANPA MENU ==========
+    # Uncomment (hapus tanda #) salah satu contoh di bawah untuk eksekusi langsung
+    
+    # # 1. Load data
+    # analyzer = BookAnalyzer("classics.json")
+    
+    # # 2. MIN/MAX HARGA SEMUA KATEGORI
+    # prices = [book.get('price', 0) for book in analyzer.books]
+    # min_price = min(prices)
+    # max_price = max(prices)
+    # min_book = next(book for book in analyzer.books if book.get('price') == min_price)
+    # max_book = next(book for book in analyzer.books if book.get('price') == max_price)
+    # print(f"Harga Minimum: £{min_price:.2f} - {min_book.get('title')}")
+    # print(f"Harga Maksimum: £{max_price:.2f} - {max_book.get('title')}")
+    
+    # # 3. TOTAL HARGA SEMUA BUKU
+    # total = sum(book.get('price', 0) for book in analyzer.books)
+    # print(f"Total harga semua buku: £{total:.2f}")
+    
+    # # 4. TOTAL PRODUK PER KATEGORI
+    # categories = analyzer.get_categories()
+    # for cat in categories:
+    #     count = sum(1 for book in analyzer.books if book.get('category') == cat)
+    #     print(f"{cat}: {count} buku")
+    
+    # # 5. CARI BUKU BERDASARKAN KEYWORD DESKRIPSI
+    # keyword = "love"  # Ganti dengan keyword yang diinginkan
+    # found = [book for book in analyzer.books 
+    #          if book.get('description') and keyword in book.get('description', '').lower()]
+    # print(f"Ditemukan {len(found)} buku dengan keyword '{keyword}':")
+    # for book in found[:5]:  # Tampilkan 5 pertama
+    #     print(f"  - {book.get('title')}")
+    
+    # # 6. TOTAL STOCK SEMUA BUKU
+    # total_stock = sum(book.get('stock', 0) or 0 for book in analyzer.books)
+    # print(f"Total stock: {total_stock} unit")
+    
+    # # 7. CARI BUKU BERDASARKAN JUDUL
+    # title_keyword = "love"  # Ganti dengan keyword judul
+    # found = [book for book in analyzer.books 
+    #          if title_keyword in book.get('title', '').lower()]
+    # for book in found:
+    #     print(f"{book.get('title')}: £{book.get('price', 0):.2f}")
+    
+    # # 8. MIN/MAX HARGA PER KATEGORI TERTENTU
+    # selected_cat = "Classics"  # Ganti dengan kategori yang diinginkan
+    # cat_books = [book for book in analyzer.books if book.get('category') == selected_cat]
+    # if cat_books:
+    #     prices = [book.get('price', 0) for book in cat_books]
+    #     print(f"Kategori {selected_cat}:")
+    #     print(f"  Min: £{min(prices):.2f}")
+    #     print(f"  Max: £{max(prices):.2f}")
