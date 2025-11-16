@@ -85,12 +85,14 @@ class BooksSpider(scrapy.Spider):
         match = re.search(r"(\d+)", availability_text)
         if match:
             stock_num = int(match.group(1))
-
+        # product descripttion
+        description = response.css(".product_page > p::text").get()
         yield {
             "title": title,
             "price": price,
             "category": category,
             "upc": upc,
             "stock": stock_num,
+            "description": description,
             "detail_page": response.url
         }

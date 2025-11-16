@@ -22,9 +22,9 @@ ADDONS = {}
 ROBOTSTXT_OBEY = True
 
 # Concurrency and throttling settings
-#CONCURRENT_REQUESTS = 16
-CONCURRENT_REQUESTS_PER_DOMAIN = 1
-DOWNLOAD_DELAY = 1
+CONCURRENT_REQUESTS = 32  # Kirim banyak request sekaligus
+CONCURRENT_REQUESTS_PER_DOMAIN = 8  # 8 request paralel ke domain yang sama
+DOWNLOAD_DELAY = 0.25  # Delay 0.25 detik (dari 1 detik)
 
 # Disable cookies (enabled by default)
 #COOKIES_ENABLED = False
