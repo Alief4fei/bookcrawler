@@ -148,18 +148,26 @@ class BookAnalyzer:
         
         keyword = input("\nMasukkan kata kunci deskripsi: ").lower()
         
-        found = [book for book in self.books 
-                if keyword in book.get('description', '').lower()]
+        found = []
+        for book in self.books:
+            desc = book.get('description')
+            if desc and isinstance(desc, str) and keyword in desc.lower():
+                found.append(book)
         
         if found:
             print(f"\n📚 Ditemukan {len(found)} buku:")
             for book in found:
-                desc = book.get('description', 'Tidak ada deskripsi')[:100]
+                desc = book.get('description', 'Tidak ada deskripsi')
+                if desc and len(desc) > 100:
+                    desc = desc[:100] + "..."
+                
                 print(f"\n  📖 {book.get('title')}")
                 print(f"     💰 £{book.get('price', 0):.2f}")
-                print(f"     📝 {desc}...")
+                print(f"     📂 Kategori: {book.get('category', 'N/A')}")
+                print(f"     📝 Deskripsi: {desc}")
         else:
             print("\n❌ Tidak ada buku dengan deskripsi tersebut!")
+            print("💡 Tips: Coba kata kunci lain seperti 'love', 'war', 'fantasy', dll.")
     
     # ========== MENU 5: DETAIL PAGE ==========
     def menu_detail_page(self):
