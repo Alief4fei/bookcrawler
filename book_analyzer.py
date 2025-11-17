@@ -481,7 +481,7 @@ class BookAnalyzer:
             elif choice == "9":
                 self.menu_upc()
             elif choice == "0":
-                print("\n Terima kasih! Sampai jumpa.")
+                print("\n Terima kasih! Sampai jumpa lagi.")
                 break
             else:
                 print("\n Pilihan tidak valid!")
