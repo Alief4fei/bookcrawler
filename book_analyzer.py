@@ -25,6 +25,101 @@ class BookAnalyzer:
                 categories.add(book['category'])
         return sorted(categories)
     
+    # ========== MENU 0: PENCARIAN BUKU ==========
+    def menu_cari_buku(self):
+        print("\n" + "="*60)
+        print("MENU PENCARIAN BUKU")
+        print("="*60)
+        print("1. Cari buku berdasarkan judul")
+        print("2. Cari buku berdasarkan kategori")
+        print("3. Cari buku berdasarkan range harga")
+        print("4. Cari buku berdasarkan rating")
+        print("0. Kembali")
+        
+        choice = input("\nPilih menu: ")
+        
+        if choice == "1":
+            keyword = input("\nMasukkan kata kunci judul: ").strip()
+            if not keyword:
+                print("\nKata kunci tidak boleh kosong!")
+                return
+            
+            keyword_lower = keyword.lower()
+            found = [book for book in self.books 
+                    if keyword_lower in book.get('title', '').lower()]
+            
+            if found:
+                print(f"\nDitemukan {len(found)} buku:")
+                for book in found:
+                    print(f"\n  Judul: {book.get('title')}")
+                    print(f"    Harga: £{book.get('price', 0):.2f}")
+                    print(f"    Kategori: {book.get('category', 'N/A')}")
+                    print(f"    Rating: {book.get('rating', 'N/A')}/5")
+                    print(f"    Stock: {book.get('stock', 'N/A')}")
+            else:
+                print(f"\nBuku dengan kata '{keyword}' tidak ditemukan!")
+                print("Tips: Coba kata kunci yang lebih pendek, misal 'cat' atau 'hat'")
+        
+        elif choice == "2":
+            categories = self.get_categories()
+            print("\nKategori tersedia:")
+            for i, cat in enumerate(categories, 1):
+                print(f"{i}. {cat}")
+            
+            cat_choice = input("\nPilih kategori (nomor): ")
+            try:
+                selected_cat = categories[int(cat_choice)-1]
+                found = [book for book in self.books if book.get('category') == selected_cat]
+                
+                print(f"\n Buku dalam kategori '{selected_cat}' ({len(found)} buku):")
+                for book in found:
+                    print(f"\n  Judul: {book.get('title')}")
+                    print(f"    Harga :  £{book.get('price', 0):.2f}")
+                    print(f"    Rating: {book.get('rating', 'N/A')}/5")
+            except:
+                print("Pilihan tidak valid!")
+        
+        elif choice == "3":
+            try:
+                min_price = float(input("\nMasukkan harga minimum (£): "))
+                max_price = float(input("Masukkan harga maksimum (£): "))
+                
+                found = [book for book in self.books 
+                        if min_price <= book.get('price', 0) <= max_price]
+                
+                if found:
+                    print(f"\n Ditemukan {len(found)} buku dengan harga £{min_price:.2f} - £{max_price:.2f}:")
+                    for book in found:
+                        print(f"\n  Judul: {book.get('title')}")
+                        print(f"    Harga :  £{book.get('price', 0):.2f}")
+                        print(f"    Kategori: {book.get('category', 'N/A')}")
+                else:
+                    print("\n Tidak ada buku dalam range harga tersebut!")
+            except ValueError:
+                print("\n Input harga tidak valid!")
+        
+        elif choice == "4":
+            try:
+                rating = int(input("\nMasukkan rating (1-5): "))
+                if 1 <= rating <= 5:
+                    found = [book for book in self.books if book.get('rating') == rating]
+                    
+                    if found:
+                        print(f"\n Ditemukan {len(found)} buku dengan rating {rating}:")
+                        for book in found[:10]:  # Tampilkan 10 pertama
+                            print(f"\n  Judul: {book.get('title')}")
+                            print(f"    Harga :  £{book.get('price', 0):.2f}")
+                            print(f"    Kategori: {book.get('category', 'N/A')}")
+                        
+                        if len(found) > 10:
+                            print(f"\n  ... dan {len(found)-10} buku lainnya")
+                    else:
+                        print(f"\n Tidak ada buku dengan rating {rating}!")
+                else:
+                    print("\n Rating harus antara 1-5!")
+            except ValueError:
+                print("\n Input rating tidak valid!")
+    
     # ========== MENU 1: HARGA ==========
     def menu_harga(self):
         print("\n" + "="*60)
@@ -39,7 +134,7 @@ class BookAnalyzer:
         
         if choice == "1":
             total = sum(book.get('price', 0) for book in self.books)
-            print(f"\n💰 Total harga semua buku: £{total:.2f}")
+            print(f"\n Total harga semua buku: £{total:.2f}")
         
         elif choice == "2":
             categories = self.get_categories()
@@ -53,7 +148,7 @@ class BookAnalyzer:
                 total = sum(book.get('price', 0) for book in self.books 
                            if book.get('category') == selected_cat)
                 count = sum(1 for book in self.books if book.get('category') == selected_cat)
-                print(f"\n💰 Total harga kategori '{selected_cat}': £{total:.2f} ({count} buku)")
+                print(f"\n Total harga kategori '{selected_cat}': £{total:.2f} ({count} buku)")
             except:
                 print("Pilihan tidak valid!")
         
@@ -63,11 +158,11 @@ class BookAnalyzer:
                     if title in book.get('title', '').lower()]
             
             if found:
-                print(f"\n📚 Ditemukan {len(found)} buku:")
+                print(f"\n Ditemukan {len(found)} buku:")
                 for book in found:
                     print(f"  - {book.get('title')}: £{book.get('price', 0):.2f}")
             else:
-                print("\n❌ Buku tidak ditemukan!")
+                print("\n Buku tidak ditemukan!")
     
     # ========== MENU 2: TOTAL PRODUK ==========
     def menu_total_produk(self):
@@ -81,11 +176,11 @@ class BookAnalyzer:
         choice = input("\nPilih menu: ")
         
         if choice == "1":
-            print(f"\n📚 Total produk buku: {len(self.books)} buku")
+            print(f"\n Total produk buku: {len(self.books)} buku")
         
         elif choice == "2":
             categories = self.get_categories()
-            print("\n📊 Total buku per kategori:")
+            print("\n Total buku per kategori:")
             for cat in categories:
                 count = sum(1 for book in self.books if book.get('category') == cat)
                 print(f"  {cat}: {count} buku")
@@ -109,10 +204,10 @@ class BookAnalyzer:
                 min_book = next(book for book in self.books if book.get('price') == min_price)
                 max_book = next(book for book in self.books if book.get('price') == max_price)
                 
-                print(f"\n💰 Harga Minimum: £{min_price:.2f}")
-                print(f"   📖 {min_book.get('title')}")
-                print(f"\n💰 Harga Maksimum: £{max_price:.2f}")
-                print(f"   📖 {max_book.get('title')}")
+                print(f"\n Harga Minimum: £{min_price:.2f}")
+                print(f"    {min_book.get('title')}")
+                print(f"\n Harga Maksimum: £{max_price:.2f}")
+                print(f"    {max_book.get('title')}")
         
         elif choice == "2":
             categories = self.get_categories()
@@ -132,11 +227,11 @@ class BookAnalyzer:
                     min_book = next(book for book in cat_books if book.get('price') == min_price)
                     max_book = next(book for book in cat_books if book.get('price') == max_price)
                     
-                    print(f"\n📊 Kategori: {selected_cat}")
-                    print(f"\n💰 Harga Minimum: £{min_price:.2f}")
-                    print(f"   📖 {min_book.get('title')}")
-                    print(f"\n💰 Harga Maksimum: £{max_price:.2f}")
-                    print(f"   📖 {max_book.get('title')}")
+                    print(f"\n Kategori: {selected_cat}")
+                    print(f"\n Harga Minimum: £{min_price:.2f}")
+                    print(f"    {min_book.get('title')}")
+                    print(f"\n Harga Maksimum: £{max_price:.2f}")
+                    print(f"    {max_book.get('title')}")
             except:
                 print("Pilihan tidak valid!")
     
@@ -146,28 +241,40 @@ class BookAnalyzer:
         print("MENU PENCARIAN BERDASARKAN DESKRIPSI")
         print("="*60)
         
-        keyword = input("\nMasukkan kata kunci deskripsi: ").lower()
+        keyword = input("\nMasukkan kata kunci deskripsi: ").strip()
+        if not keyword:
+            print("\n Kata kunci tidak boleh kosong!")
+            return
         
+        keyword_lower = keyword.lower()
         found = []
+        
         for book in self.books:
             desc = book.get('description')
-            if desc and isinstance(desc, str) and keyword in desc.lower():
-                found.append(book)
+            # Pastikan deskripsi ada, bukan None, dan adalah string
+            if desc and isinstance(desc, str) and desc.strip():
+                # Cari keyword sebagai kata utuh (word boundary)
+                import re
+                # Pattern untuk mencari kata sebagai whole word
+                pattern = r'\b' + re.escape(keyword_lower) + r'\b'
+                if re.search(pattern, desc.lower()):
+                    found.append(book)
         
         if found:
-            print(f"\n📚 Ditemukan {len(found)} buku:")
+            print(f"\n Ditemukan {len(found)} buku dengan keyword '{keyword}':")
             for book in found:
                 desc = book.get('description', 'Tidak ada deskripsi')
-                if desc and len(desc) > 100:
-                    desc = desc[:100] + "..."
+                if desc and len(desc) > 150:
+                    desc = desc[:150] + "..."
                 
-                print(f"\n  📖 {book.get('title')}")
-                print(f"     💰 £{book.get('price', 0):.2f}")
-                print(f"     📂 Kategori: {book.get('category', 'N/A')}")
-                print(f"     📝 Deskripsi: {desc}")
+                print(f"\n   Judul: {book.get('title')}")
+                print(f"      Harga: £{book.get('price', 0):.2f}")
+                print(f"      Kategori: {book.get('category', 'N/A')}")
+                print(f"      Rating: {book.get('rating', 'N/A')}/5")
+                print(f"      Deskripsi: {desc}")
         else:
-            print("\n❌ Tidak ada buku dengan deskripsi tersebut!")
-            print("💡 Tips: Coba kata kunci lain seperti 'love', 'war', 'fantasy', dll.")
+            print(f"\n Tidak ada buku dengan kata '{keyword}' dalam deskripsi!")
+            print(" Tips: Coba kata kunci lain seperti 'love', 'war', 'fantasy', 'magic', dll.")
     
     # ========== MENU 5: DETAIL PAGE ==========
     def menu_detail_page(self):
@@ -181,12 +288,12 @@ class BookAnalyzer:
                 if title in book.get('title', '').lower()]
         
         if found:
-            print(f"\n📚 Ditemukan {len(found)} buku:")
+            print(f"\n Ditemukan {len(found)} buku:")
             for book in found:
-                print(f"\n  📖 {book.get('title')}")
-                print(f"     🔗 {book.get('detail_page', 'N/A')}")
+                print(f"\n Judul:  {book.get('title')}")
+                print(f"Detail Page:  {book.get('detail_page', 'N/A')}")
         else:
-            print("\n❌ Buku tidak ditemukan!")
+            print("\n Buku tidak ditemukan!")
     
     # ========== MENU 6: RATING ==========
     def menu_rating(self):
@@ -201,7 +308,7 @@ class BookAnalyzer:
         choice = input("\nPilih menu: ")
         
         if choice == "1":
-            print("\n⭐ Rating semua buku:")
+            print("\n Rating semua buku:")
             rating_count = {}
             for book in self.books:
                 rating = book.get('rating', 'N/A')
@@ -221,7 +328,7 @@ class BookAnalyzer:
                 selected_cat = categories[int(cat_choice)-1]
                 cat_books = [book for book in self.books if book.get('category') == selected_cat]
                 
-                print(f"\n⭐ Rating kategori '{selected_cat}':")
+                print(f"\n Rating kategori '{selected_cat}':")
                 rating_count = {}
                 for book in cat_books:
                     rating = book.get('rating', 'N/A')
@@ -239,10 +346,10 @@ class BookAnalyzer:
             
             if found:
                 for book in found:
-                    print(f"\n  📖 {book.get('title')}")
-                    print(f"     ⭐ Rating: {book.get('rating', 'N/A')}")
+                    print(f"\n   {book.get('title')}")
+                    print(f"      Rating: {book.get('rating', 'N/A')}")
             else:
-                print("\n❌ Buku tidak ditemukan!")
+                print("\n Buku tidak ditemukan!")
     
     # ========== MENU 7: STOCK ==========
     def menu_stock(self):
@@ -258,12 +365,12 @@ class BookAnalyzer:
         
         if choice == "1":
             total_stock = sum(book.get('stock', 0) or 0 for book in self.books)
-            print(f"\n📦 Total stock semua buku: {total_stock} unit")
-            print(f"📚 Jumlah jenis buku: {len(self.books)}")
+            print(f"\n Total stock semua buku: {total_stock} unit")
+            print(f" Jumlah jenis buku: {len(self.books)}")
         
         elif choice == "2":
             categories = self.get_categories()
-            print("\n📊 Total stock per kategori:")
+            print("\n Total stock per kategori:")
             for cat in categories:
                 cat_books = [book for book in self.books if book.get('category') == cat]
                 total_stock = sum(book.get('stock', 0) or 0 for book in cat_books)
@@ -276,10 +383,10 @@ class BookAnalyzer:
             
             if found:
                 for book in found:
-                    print(f"\n  📖 {book.get('title')}")
-                    print(f"     📦 Stock: {book.get('stock', 'N/A')} unit")
+                    print(f"\n   {book.get('title')}")
+                    print(f"      Stock: {book.get('stock', 'N/A')} unit")
             else:
-                print("\n❌ Buku tidak ditemukan!")
+                print("\n Buku tidak ditemukan!")
     
     # ========== MENU 8: UPC ==========
     def menu_upc(self):
@@ -294,7 +401,7 @@ class BookAnalyzer:
         choice = input("\nPilih menu: ")
         
         if choice == "1":
-            print("\n🏷️  List UPC semua buku:")
+            print("\n List UPC semua buku:")
             for i, book in enumerate(self.books[:20], 1):  # Tampilkan 20 pertama
                 print(f"  {i}. {book.get('title')}: {book.get('upc', 'N/A')}")
             
@@ -312,7 +419,7 @@ class BookAnalyzer:
                 selected_cat = categories[int(cat_choice)-1]
                 cat_books = [book for book in self.books if book.get('category') == selected_cat]
                 
-                print(f"\n🏷️  UPC kategori '{selected_cat}':")
+                print(f"\n UPC kategori '{selected_cat}':")
                 for book in cat_books:
                     print(f"  {book.get('title')}: {book.get('upc', 'N/A')}")
             except:
@@ -325,10 +432,10 @@ class BookAnalyzer:
             
             if found:
                 for book in found:
-                    print(f"\n  📖 {book.get('title')}")
-                    print(f"     🏷️  UPC: {book.get('upc', 'N/A')}")
+                    print(f"\n   {book.get('title')}")
+                    print(f"      UPC: {book.get('upc', 'N/A')}")
             else:
-                print("\n❌ Buku tidak ditemukan!")
+                print("\n Buku tidak ditemukan!")
     
     # ========== MENU UTAMA ==========
     def run(self):
@@ -341,40 +448,43 @@ class BookAnalyzer:
             print("\n" + "="*60)
             print("BOOK ANALYZER - MENU UTAMA")
             print("="*60)
-            print("1. Pencarian Harga")
-            print("2. Total Produk Buku")
-            print("3. Minimum & Maksimum Harga")
-            print("4. Pencarian Berdasarkan Deskripsi")
-            print("5. Pencarian Detail Page")
-            print("6. Rating Buku")
-            print("7. Stock Buku")
-            print("8. UPC Buku")
+            print("1. Pencarian Buku")
+            print("2. Pencarian Harga")
+            print("3. Total Produk Buku")
+            print("4. Minimum & Maksimum Harga")
+            print("5. Pencarian Berdasarkan Deskripsi")
+            print("6. Pencarian Detail Page")
+            print("7. Rating Buku")
+            print("8. Stock Buku")
+            print("9. UPC Buku")
             print("0. Keluar")
             print("="*60)
             
             choice = input("\nPilih menu: ")
             
             if choice == "1":
-                self.menu_harga()
+                self.menu_cari_buku()
             elif choice == "2":
-                self.menu_total_produk()
+                self.menu_harga()
             elif choice == "3":
-                self.menu_min_max_harga()
+                self.menu_total_produk()
             elif choice == "4":
-                self.menu_cari_deskripsi()
+                self.menu_min_max_harga()
             elif choice == "5":
-                self.menu_detail_page()
+                self.menu_cari_deskripsi()
             elif choice == "6":
-                self.menu_rating()
+                self.menu_detail_page()
             elif choice == "7":
-                self.menu_stock()
+                self.menu_rating()
             elif choice == "8":
+                self.menu_stock()
+            elif choice == "9":
                 self.menu_upc()
             elif choice == "0":
-                print("\n👋 Terima kasih! Sampai jumpa.")
+                print("\n Terima kasih! Sampai jumpa.")
                 break
             else:
-                print("\n❌ Pilihan tidak valid!")
+                print("\n Pilihan tidak valid!")
             
             input("\nTekan Enter untuk melanjutkan...")
 

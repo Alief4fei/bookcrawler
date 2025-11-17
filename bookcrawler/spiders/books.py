@@ -101,10 +101,17 @@ class BooksSpider(scrapy.Spider):
         }
         rating_num = rating_map.get(rating_text, 0)
         
-        # product description
-        description = response.css("#product_description ~ p::text").get()
+        # product description - ambil semua paragraf deskripsi
+        description = response.css("#product_description ~ p::text").getall()
         if not description:
-            description = response.css(".product_page > p::text").get()
+            description = response.css(".product_page > p::text").getall()
+        
+        # Gabungkan semua paragraf menjadi satu string
+        description = " ".join(description).strip() if description else None
+        
+        # Bersihkan text "...more" di akhir jika ada
+        if description and description.endswith("...more"):
+            description = description[:-7].strip()
         
         yield {
             "title": title,
