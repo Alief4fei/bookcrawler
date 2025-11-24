@@ -128,6 +128,8 @@ class BookAnalyzer:
         print("1. Total harga semua buku")
         print("2. Total harga per kategori")
         print("3. Harga suatu buku (cari berdasarkan judul)")
+        print("4. Rata-rata harga semua buku")
+        print("5. Rata-rata harga per kategori")
         print("0. Kembali")
         
         choice = input("\nPilih menu: ")
@@ -163,6 +165,36 @@ class BookAnalyzer:
                     print(f"  - {book.get('title')}: £{book.get('price', 0):.2f}")
             else:
                 print("\n Buku tidak ditemukan!")
+
+        elif choice == "4":
+            total = sum(book.get('price', 0) for book in self.books)
+            count = len(self.books)
+            if count > 0:
+                avg = total / count
+                print(f"\n Rata-rata harga semua buku: £{avg:.2f}")
+            else:
+                print("\n Tidak ada data buku.")
+
+        elif choice == "5":
+            categories = self.get_categories()
+            print("\nKategori tersedia:")
+            for i, cat in enumerate(categories, 1):
+                print(f"{i}. {cat}")
+            
+            cat_choice = input("\nPilih kategori (nomor): ")
+            try:
+                selected_cat = categories[int(cat_choice)-1]
+                cat_books = [book for book in self.books if book.get('category') == selected_cat]
+                total = sum(book.get('price', 0) for book in cat_books)
+                count = len(cat_books)
+                
+                if count > 0:
+                    avg = total / count
+                    print(f"\n Rata-rata harga kategori '{selected_cat}': £{avg:.2f} ({count} buku)")
+                else:
+                    print(f"\n Tidak ada buku di kategori '{selected_cat}'.")
+            except:
+                print("Pilihan tidak valid!")
     
     # ========== MENU 2: TOTAL PRODUK ==========
     def menu_total_produk(self):
